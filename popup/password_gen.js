@@ -1,18 +1,22 @@
 function getRandomArrayEntry(array) {
     return array[Math.floor(Math.random() * array.length)]
 }
+
 function getRandomEntries(array, length, separator = "") {
     return Array.from(
         { length: length },
         (v, k) => getRandomArrayEntry(array)
     );
 }
+
 function joinEntries(entries, separator) {
     return entries.join(separator);
 }
+
 function getRandomWords(numWords) {
-    var words = getWords();
-    var entries = getRandomEntries(words, numWords);
+    var wordsAToM = getWordsAToM();
+    var wordsNToZ = getWordsNToZ();
+    var entries = getRandomEntries([...wordsAToM, ...wordsNToZ], numWords);
     if (document.getElementById("chkCapitaliseFirstCharacter").checked) {
         entries = entries.map((entry) => entry.charAt(0).toUpperCase() + entry.slice(1));
     }
@@ -22,6 +26,7 @@ function getRandomWords(numWords) {
     }
     return joinEntries(entries, separator);
 }
+
 function getRandomString(requiredLength, includeNumbers, includeLowercase, includeUppercase, includeCharacters, includeExtendedAscii) {
     const lowercase = "abcdefghijklmnopqrstuvwxyz";
     const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -37,8 +42,8 @@ function getRandomString(requiredLength, includeNumbers, includeLowercase, inclu
     var entries = getRandomEntries(chars, requiredLength);
     return joinEntries(entries, "");
 }
+
 function generateString() {
-    console.log('generateString');
     document.querySelector("#generated-password").innerText = getRandomString(
         document.getElementById("numPasswordLength").value,
         document.getElementById("chkNumbers").checked,
@@ -47,8 +52,8 @@ function generateString() {
         document.getElementById("chkSymbols").checked,
         document.getElementById("chkExtendedAscii").checked);
 }
+
 function generateWords() {
-    console.log('generateWords');
     document.querySelector("#generated-password").innerText = getRandomWords(
         document.getElementById("numWords").value
     );
