@@ -39,7 +39,7 @@ function getRandomString(requiredLength, includeNumbers, includeLowercase, inclu
 }
 function generateString() {
     console.log('generateString');
-    document.querySelector("#generated-password").innerHTML = getRandomString(
+    document.querySelector("#generated-password").innerText = getRandomString(
         document.getElementById("numPasswordLength").value,
         document.getElementById("chkNumbers").checked,
         document.getElementById("chkLowercase").checked,
@@ -49,7 +49,7 @@ function generateString() {
 }
 function generateWords() {
     console.log('generateWords');
-    document.querySelector("#generated-password").innerHTML = getRandomWords(
+    document.querySelector("#generated-password").innerText = getRandomWords(
         document.getElementById("numWords").value
     );
 }
@@ -65,7 +65,7 @@ document.querySelector("#btnGenerateWords").addEventListener("click", (e) => {
 
 document.querySelector("#btnCopy").addEventListener("click", (e) => {
     var element = document.getElementById("generated-password");
-    var text = element.innerHTML;
+    var text = element.innerText;
     navigator.clipboard.writeText(text);
 });
 
