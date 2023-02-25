@@ -10,24 +10,35 @@ function getRandomEntries(array, length, separator = "") {
 function joinEntries(entries, separator) {
     return entries.join(separator);
 }
-
-document.querySelector("#btnGenerateString").addEventListener("click", (e) => {
-    function getRandomString(requiredLength, includeNumbers, includeLowercase, includeUppercase, includeCharacters, includeExtendedAscii) {
-        const lowercase = "abcdefghijklmnopqrstuvwxyz";
-        const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const numbers = "0123456789";
-        const characters = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ";
-        const extAscii = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
-        let chars =
-            (includeNumbers ? numbers : "") +
-            (includeLowercase ? lowercase : "") +
-            (includeUppercase ? uppercase : "") +
-            (includeCharacters ? characters : "") +
-            (includeExtendedAscii ? extAscii : "");
-        var entries = getRandomEntries(chars, requiredLength);
-        return joinEntries(entries, "");
+function getRandomWords(numWords) {
+    var words = getWords();
+    var entries = getRandomEntries(words, numWords);
+    if (document.getElementById("chkCapitaliseFirstCharacter").checked) {
+        entries = entries.map((entry) => entry.charAt(0).toUpperCase() + entry.slice(1));
     }
-
+    var separator = document.getElementById("txtSeparator").value;
+    if (!separator) {
+        separator = ".";
+    }
+    return joinEntries(entries, separator);
+}
+function getRandomString(requiredLength, includeNumbers, includeLowercase, includeUppercase, includeCharacters, includeExtendedAscii) {
+    const lowercase = "abcdefghijklmnopqrstuvwxyz";
+    const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numbers = "0123456789";
+    const characters = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ";
+    const extAscii = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+    let chars =
+        (includeNumbers ? numbers : "") +
+        (includeLowercase ? lowercase : "") +
+        (includeUppercase ? uppercase : "") +
+        (includeCharacters ? characters : "") +
+        (includeExtendedAscii ? extAscii : "");
+    var entries = getRandomEntries(chars, requiredLength);
+    return joinEntries(entries, "");
+}
+function generateString() {
+    console.log('generateString');
     document.querySelector("#generated-password").innerHTML = getRandomString(
         document.getElementById("numPasswordLength").value,
         document.getElementById("chkNumbers").checked,
@@ -35,25 +46,20 @@ document.querySelector("#btnGenerateString").addEventListener("click", (e) => {
         document.getElementById("chkUppercase").checked,
         document.getElementById("chkSymbols").checked,
         document.getElementById("chkExtendedAscii").checked);
-});
-
-
-document.querySelector("#btnGenerateWords").addEventListener("click", (e) => {
-    function getRandomWords(numWords) {
-        var words = getWords();
-        var entries = getRandomEntries(words, numWords);
-        if (document.getElementById("chkCapitaliseFirstCharacter").checked) {
-            entries = entries.map((entry) => entry.charAt(0).toUpperCase() + entry.slice(1));
-        }
-        var separator = document.getElementById("txtSeparator").value;
-        if (!separator) {
-            separator = ".";
-        }
-        return joinEntries(entries, separator);
-    }
+}
+function generateWords() {
+    console.log('generateWords');
     document.querySelector("#generated-password").innerHTML = getRandomWords(
         document.getElementById("numWords").value
     );
+}
+
+document.querySelector("#btnGenerateString").addEventListener("click", (e) => {
+    generateString();
+});
+
+document.querySelector("#btnGenerateWords").addEventListener("click", (e) => {
+    generateWords();
 });
 
 
@@ -63,18 +69,30 @@ document.querySelector("#btnCopy").addEventListener("click", (e) => {
     navigator.clipboard.writeText(text);
 });
 
-
 document.querySelector("#btnRandomWordsTab").addEventListener("click", (e) => {
+    const firstActivation = !document.getElementById("btnRandomWordsTab").classList.contains('activeTab');
+
     document.getElementById("generateRandomWords").classList.remove('hidden');
     document.getElementById("generateRandomString").classList.add('hidden');
     document.getElementById("btnRandomWordsTab").classList.add('activeTab');
     document.getElementById("btnRandomStringTab").classList.remove('activeTab');
+
+    if (firstActivation) {
+        generateWords();
+    }
 });
+
 document.querySelector("#btnRandomStringTab").addEventListener("click", (e) => {
+    const firstActivation = !document.getElementById("btnRandomStringTab").classList.contains('activeTab');
+
     document.getElementById("generateRandomString").classList.remove('hidden');
     document.getElementById("generateRandomWords").classList.add('hidden');
     document.getElementById("btnRandomStringTab").classList.add('activeTab');
     document.getElementById("btnRandomWordsTab").classList.remove('activeTab');
+    
+    if (firstActivation) {
+        generateString();
+    }
 });
 
-document.querySelector("#btnGenerateWords").click();
+generateWords();
