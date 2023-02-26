@@ -1,4 +1,4 @@
-function getWordsAToM() {
+function getWordsFToM() {
     return [
         "f",
         "fa",

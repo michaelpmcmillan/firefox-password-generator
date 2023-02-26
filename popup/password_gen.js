@@ -1,8 +1,10 @@
+var newPassword = "";
+
 function getRandomArrayEntry(array) {
     return array[Math.floor(Math.random() * array.length)]
 }
 
-function getRandomEntries(array, length, separator = "") {
+function getRandomEntries(array, length) {
     return Array.from(
         { length: length },
         (v, k) => getRandomArrayEntry(array)
@@ -13,91 +15,40 @@ function joinEntries(entries, separator) {
     return entries.join(separator);
 }
 
-function getRandomWords(numWords) {
-    var wordsAToM = getWordsAToM();
+function getRandomWords() {
+    var wordsAToE = getWordsAToE();
+    var wordsFToM = getWordsFToM();
     var wordsNToZ = getWordsNToZ();
-    var entries = getRandomEntries([...wordsAToM, ...wordsNToZ], numWords);
-    if (document.getElementById("chkCapitaliseFirstCharacter").checked) {
+    var entries = getRandomEntries([...wordsAToE, ...wordsFToM, ...wordsNToZ], settings.words_config.num_words);
+    if (settings.words_config.capitalise_first_letter) {
         entries = entries.map((entry) => entry.charAt(0).toUpperCase() + entry.slice(1));
     }
-    var separator = document.getElementById("txtSeparator").value;
-    if (!separator) {
-        separator = ".";
-    }
-    return joinEntries(entries, separator);
+    return joinEntries(entries, settings.words_config.separator);
 }
 
-function getRandomString(requiredLength, includeNumbers, includeLowercase, includeUppercase, includeCharacters, includeExtendedAscii) {
+function getRandomString() {
     const lowercase = "abcdefghijklmnopqrstuvwxyz";
     const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const numbers = "0123456789";
     const characters = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ";
     const extAscii = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
     let chars =
-        (includeNumbers ? numbers : "") +
-        (includeLowercase ? lowercase : "") +
-        (includeUppercase ? uppercase : "") +
-        (includeCharacters ? characters : "") +
-        (includeExtendedAscii ? extAscii : "");
-    var entries = getRandomEntries(chars, requiredLength);
+        (settings.string_config.include_numbers ? numbers : "") +
+        (settings.string_config.include_lowercase ? lowercase : "") +
+        (settings.string_config.include_uppercase ? uppercase : "") +
+        (settings.string_config.include_symbols ? characters : "") +
+        (settings.string_config.include_extended_ascii ? extAscii : "");
+    var entries = getRandomEntries(chars, settings.string_config.pass_length);
     return joinEntries(entries, "");
 }
 
-function generateString() {
-    document.querySelector("#generated-password").innerText = getRandomString(
-        document.getElementById("numPasswordLength").value,
-        document.getElementById("chkNumbers").checked,
-        document.getElementById("chkLowercase").checked,
-        document.getElementById("chkUppercase").checked,
-        document.getElementById("chkSymbols").checked,
-        document.getElementById("chkExtendedAscii").checked);
-}
-
-function generateWords() {
-    document.querySelector("#generated-password").innerText = getRandomWords(
-        document.getElementById("numWords").value
-    );
-}
-
-document.querySelector("#btnGenerateString").addEventListener("click", (e) => {
-    generateString();
-});
-
-document.querySelector("#btnGenerateWords").addEventListener("click", (e) => {
-    generateWords();
-});
-
-
-document.querySelector("#btnCopy").addEventListener("click", (e) => {
-    var element = document.getElementById("generated-password");
-    var text = element.innerText;
-    navigator.clipboard.writeText(text);
-});
-
-document.querySelector("#btnRandomWordsTab").addEventListener("click", (e) => {
-    const firstActivation = !document.getElementById("btnRandomWordsTab").classList.contains('activeTab');
-
-    document.getElementById("generateRandomWords").classList.remove('hidden');
-    document.getElementById("generateRandomString").classList.add('hidden');
-    document.getElementById("btnRandomWordsTab").classList.add('activeTab');
-    document.getElementById("btnRandomStringTab").classList.remove('activeTab');
-
-    if (firstActivation) {
-        generateWords();
+function generatePassword() {
+    if (settings.tab === "words") {
+        return getRandomWords();
+    } else if(settings.tab === "string") {
+        return getRandomString();
     }
-});
 
-document.querySelector("#btnRandomStringTab").addEventListener("click", (e) => {
-    const firstActivation = !document.getElementById("btnRandomStringTab").classList.contains('activeTab');
-
-    document.getElementById("generateRandomString").classList.remove('hidden');
-    document.getElementById("generateRandomWords").classList.add('hidden');
-    document.getElementById("btnRandomStringTab").classList.add('activeTab');
-    document.getElementById("btnRandomWordsTab").classList.remove('activeTab');
-    
-    if (firstActivation) {
-        generateString();
-    }
-});
-
-generateWords();
+    console.log('unknown tab: ' + settings.tab);
+    return getRandomWords();
+}

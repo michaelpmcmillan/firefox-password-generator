@@ -1,4 +1,4 @@
-function getWordsAToM() {
+function getWordsAToE() {
     return [
         "a",
         "aa",
