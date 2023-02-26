@@ -14,7 +14,7 @@
     },
     "browser_specific_settings": {
         "gecko": {
-            "id": "macca-password-generator@mikemcmillan.dev",
+            "id": "{216dcfdd-b40b-435f-8b28-101d96752c5c}",
             "strict_min_version": "42.0"
         }
     },
